@@ -4,8 +4,8 @@ void setup() {
 }
 
 //Noget Gay shit
-
+//Jeg er Karl
 void loop() {
   // put your main code here, to run repeatedly:
-
+hejejejejej
 }

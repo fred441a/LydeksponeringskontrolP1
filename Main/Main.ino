@@ -1,5 +1,6 @@
 void setup() {
   // put your setup code here, to run once:
+<<<<<<< HEAD
   Serial.begin(115200)
 }
 
@@ -8,4 +9,6 @@ void Jens() {
 }
 void loop() {
   // put your main code here, to run repeatedly:
+=======
+>>>>>>> 8b9d10d0e01627691ad00c8da6e043bf577eea93
 }

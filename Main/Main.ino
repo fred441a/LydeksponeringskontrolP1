@@ -3,7 +3,7 @@ void setup() {
 <<<<<<< HEAD
   Serial.begin(115200)
 }
-
+ ;
 void Jens() {
   Serial.print("Jeg hedder Jens");
 }

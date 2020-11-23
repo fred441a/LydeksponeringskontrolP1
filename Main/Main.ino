@@ -3,7 +3,8 @@ void setup() {
 Er linux bedre end windows?
 }
 //Noget Gay shit
+//Jeg er Karl
 void loop() {
   // put your main code here, to run repeatedly:
-
+hejejejejej
 }

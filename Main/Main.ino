@@ -12,6 +12,7 @@ void loop() {
 =======
 Er linux bedre end windows?
 }
+aasd
 //Noget Gay shit
 
 void loop() {

@@ -70,8 +70,9 @@ void bt_data_cb(const uint8_t *data, uint32_t len) {
 }
 
 
-void BluetoothSetup(){
-   // set up bluetooth classic via bluedroid
+void BluetoothSetup() {
+  
+  // set up bluetooth classic via bluedroid
   btStart();
   esp_bluedroid_init();
   esp_bluedroid_enable();
@@ -88,11 +89,7 @@ void BluetoothSetup(){
   // set discoverable and connectable mode, wait to be connected
   esp_bt_gap_set_scan_mode(ESP_BT_SCAN_MODE_CONNECTABLE_DISCOVERABLE);
 
-}
-
-void i2S_Setup(){
-  
-    // i2s configuration
+  // i2s configuration
   static const i2s_config_t i2s_config = {
     .mode = static_cast<i2s_mode_t>(I2S_MODE_MASTER | I2S_MODE_TX),
     .sample_rate = 44100,
@@ -121,13 +118,15 @@ void i2S_Setup(){
   i2s_set_clk(I2S_NUM_0, 44100, I2S_BITS_PER_SAMPLE_16BIT, I2S_CHANNEL_STEREO);
   i2s_set_sample_rates(I2S_NUM_0, 44100);
 
+
+
 }
+
 
 void setup() {
   Serial.begin(115200);
   BluetoothSetup();
 
-  
 }
 
 void loop() {

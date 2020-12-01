@@ -57,21 +57,56 @@ void bt_data_cb(const uint8_t *data, uint32_t len) {
     fy /= 1;
 
     // write data to I2S buffer
-    i2s_write(I2S_NUM_0, &fy, 2, &i2s_bytes_write,  10 );
+    i2s_write(I2S_NUM_0, &fy, 2, &i2s_bytes_write,  100 );
 
     //move to next memory address housing 16 bit data
     data16++;
   }
-  Serial.print("sample:");
-  Serial.println(abs((int)fy));
+  //Serial.print("sample:");
+  //Serial.println(abs((int)fy));
   //Serial.print(",Volume:");
   //Serial.println(Avarage(AmplitydeArray));
-  addRolling(abs((int)fy));
+  //addRolling(abs((int)fy));
 }
 
 
+void I2SSetup() {
+  // i2s configuration
+  static const i2s_config_t i2s_config = {
+    .mode = static_cast<i2s_mode_t>(I2S_MODE_MASTER | I2S_MODE_TX),
+    .sample_rate = 44100,
+    .bits_per_sample = I2S_BITS_PER_SAMPLE_24BIT,
+    .channel_format = I2S_CHANNEL_FMT_RIGHT_LEFT,
+    .communication_format = static_cast<i2s_comm_format_t>(I2S_COMM_FORMAT_I2S | I2S_COMM_FORMAT_I2S_MSB),
+    .intr_alloc_flags = ESP_INTR_FLAG_LEVEL1, // default interrupt priority
+    .dma_buf_count = 8,
+    .dma_buf_len = 64,
+    .use_apll = false,
+    .tx_desc_auto_clear = true
+  };
+
+  // i2s pinout
+  static const i2s_pin_config_t pin_config = {
+    .bck_io_num = 26,//26
+    .ws_io_num = 27,
+    .data_out_num = 25,, //
+    .data_in_num = I2S_PIN_NO_CHANGE
+  };
+
+  // now configure i2s with constructed pinout and config
+  i2s_driver_install(I2S_NUM_0, &i2s_config, 0, NULL);
+  i2s_set_pin(I2S_NUM_0, &pin_config);
+  //i2s_set_dac_mode(I2S_DAC_CHANNEL_LEFT_EN);
+  i2s_set_clk(I2S_NUM_0, 44100, I2S_BITS_PER_SAMPLE_16BIT, I2S_CHANNEL_STEREO);
+  i2s_set_sample_rates(I2S_NUM_0, 44100);
+
+  REG_WRITE(PIN_CTRL, 0b111111110000);
+  PIN_FUNC_SELECT(PERIPHS_IO_MUX_GPIO0_U, FUNC_GPIO0_CLK_OUT1);
+
+}
+
 void BluetoothSetup() {
-  
+
   // set up bluetooth classic via bluedroid
   btStart();
   esp_bluedroid_init();
@@ -89,35 +124,6 @@ void BluetoothSetup() {
   // set discoverable and connectable mode, wait to be connected
   esp_bt_gap_set_scan_mode(ESP_BT_SCAN_MODE_CONNECTABLE_DISCOVERABLE);
 
-  // i2s configuration
-  static const i2s_config_t i2s_config = {
-    .mode = static_cast<i2s_mode_t>(I2S_MODE_MASTER | I2S_MODE_TX),
-    .sample_rate = 44100,
-    .bits_per_sample = I2S_BITS_PER_SAMPLE_16BIT,
-    .channel_format = I2S_CHANNEL_FMT_RIGHT_LEFT,
-    .communication_format = static_cast<i2s_comm_format_t>(I2S_COMM_FORMAT_I2S | I2S_COMM_FORMAT_I2S_MSB),
-    .intr_alloc_flags = ESP_INTR_FLAG_LEVEL1, // default interrupt priority
-    .dma_buf_count = 8,
-    .dma_buf_len = 1000,
-    .use_apll = false,
-    .tx_desc_auto_clear = true
-  };
-
-  // i2s pinout
-  static const i2s_pin_config_t pin_config = {
-    .bck_io_num = 26,//26
-    .ws_io_num = 27,
-    .data_out_num = 25, //
-    .data_in_num = I2S_PIN_NO_CHANGE
-  };
-
-  // now configure i2s with constructed pinout and config
-  i2s_driver_install(I2S_NUM_0, &i2s_config, 0, NULL);
-  i2s_set_pin(I2S_NUM_0, NULL);
-  i2s_set_dac_mode(I2S_DAC_CHANNEL_LEFT_EN);
-  i2s_set_clk(I2S_NUM_0, 44100, I2S_BITS_PER_SAMPLE_16BIT, I2S_CHANNEL_STEREO);
-  i2s_set_sample_rates(I2S_NUM_0, 44100);
-
 
 
 }
@@ -126,10 +132,10 @@ void BluetoothSetup() {
 void setup() {
   Serial.begin(115200);
   BluetoothSetup();
+  I2SSetup();
 
 }
 
 void loop() {
-
-
+  delay(1000);
 }

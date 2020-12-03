@@ -1,5 +1,6 @@
 // bluetooth, config, discover and audio
 #include "esp_bt_main.h"
+#include "esp_bt.h"
 #include "esp_bt_device.h"
 #include "esp_gap_bt_api.h"
 #include "esp_a2dp_api.h"
@@ -75,7 +76,7 @@ void I2SSetup() {
   static const i2s_config_t i2s_config = {
     .mode = static_cast<i2s_mode_t>(I2S_MODE_MASTER | I2S_MODE_TX),
     .sample_rate = 44100,
-    .bits_per_sample = I2S_BITS_PER_SAMPLE_24BIT,
+    .bits_per_sample = I2S_BITS_PER_SAMPLE_16BIT,
     .channel_format = I2S_CHANNEL_FMT_RIGHT_LEFT,
     .communication_format = static_cast<i2s_comm_format_t>(I2S_COMM_FORMAT_I2S | I2S_COMM_FORMAT_I2S_MSB),
     .intr_alloc_flags = ESP_INTR_FLAG_LEVEL1, // default interrupt priority
@@ -89,7 +90,7 @@ void I2SSetup() {
   static const i2s_pin_config_t pin_config = {
     .bck_io_num = 26,//26
     .ws_io_num = 27,
-    .data_out_num = 25,, //
+    .data_out_num = 25, //
     .data_in_num = I2S_PIN_NO_CHANGE
   };
 
@@ -110,6 +111,8 @@ void BluetoothSetup() {
   // set up bluetooth classic via bluedroid
   btStart();
   esp_bluedroid_init();
+  esp_bredr_tx_power_set(ESP_PWR_LVL_N12, ESP_PWR_LVL_N9);
+  
   esp_bluedroid_enable();
 
 

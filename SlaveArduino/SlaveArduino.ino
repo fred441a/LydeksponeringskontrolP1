@@ -4,7 +4,7 @@ int j = 0;
 float gennemsnit = 0;
 
 // dB måler
-const int dbPin = 27;
+const int dbPin = 13;
 
 void setup() {
   pinMode(dbPin, INPUT);
@@ -23,7 +23,7 @@ void deciBell () {
       if (sample > signalMax) {
         signalMax = sample;
       }
-      else if (sample < signalMin) {
+      else if (sample < signaMin) {
         signalMin = sample;
       }
     }

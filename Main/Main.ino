@@ -13,6 +13,7 @@
 #define gronLED 22
 #define rodLED 21
 #define noisePin 36
+#define Mic 39
 
 
 //globals
@@ -179,6 +180,7 @@ void BluetoothSetup() {
 void setup() {
   Serial.begin(115200);
   pinMode(noisePin, INPUT);
+  pinMode(Mic, INPUT);
   pinMode(gulLED, OUTPUT);
   pinMode(gronLED, OUTPUT);
   pinMode(rodLED, OUTPUT);
@@ -203,14 +205,15 @@ void setup() {
 void SignalBehandling( void * pvParameters  ) {
   while (true) {
     if (!risiko) {
-      Serial.println("du er ikke i risiko for en høreskade");
+      //Serial.println("du er ikke i risiko for en høreskade");
       //denoises the analog signal
-      addRolling(analogRead(noisePin), NoiseArray, 50, &NoiseIndex);
-      noise = map(Avarage(NoiseArray, 50), 0, 4095, 40, 120);
-      gain = map(Avarage(NoiseArray, 50), 0, 4095, 1, 20);
+      addRolling(abs(analogRead(Mic)-1750), NoiseArray, 50, &NoiseIndex);
+      noise = map(Avarage(NoiseArray, 50), 0, 2431, 40, 120);
+      gain = map(Avarage(NoiseArray, 50), 0, 2431, 5, 1);
       //setVolume(map(noise, 40, 120, 30, 3000));
+      Serial.println(Avarage(NoiseArray,50));
 
-      if (Amplitude > 2500) {
+      if (Amplitude > 2000) {
         //start timer
         //tænd gul led
         if (timer == 0) {
@@ -220,7 +223,7 @@ void SignalBehandling( void * pvParameters  ) {
         digitalWrite(gulLED, HIGH);
 
       }
-      if (Amplitude < 2000/* indsæt rigtig volumen*/) {
+      if (Amplitude < 1500/* indsæt rigtig volumen*/) {
         //stop timer
         //sluk gul led
         timer = 0;
@@ -239,7 +242,7 @@ void SignalBehandling( void * pvParameters  ) {
         }
       }
     } else {
-      Serial.print("DU ER I RISIKO FOR HØRESKADE");
+      //Serial.print("DU ER I RISIKO FOR HØRESKADE");
       if (timer == 0) {
         timer = millis();
       } else {
